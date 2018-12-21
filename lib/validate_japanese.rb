@@ -1,6 +1,7 @@
 require "active_support"
 require "active_record"
 require "validate_japanese/version"
+require "validate_japanese/formats"
 require "validate_japanese/validations/hiragana_validator"
 require "validate_japanese/model"
 
