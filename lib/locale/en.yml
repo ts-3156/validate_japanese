@@ -1,0 +1,4 @@
+en:
+  errors:
+    messages:
+      invalid_japanese: is not a valid Japanese

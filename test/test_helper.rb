@@ -17,13 +17,4 @@ ActiveRecord::Migration.create_table :users do |t|
 end
 
 class User < ActiveRecord::Base
-  validates :name, hiragana: true
-end
-
-ActiveRecord::Migration.create_table :members do |t|
-  t.string :name
-end
-
-class Member < ActiveRecord::Base
-  validates_japanese :name
 end
