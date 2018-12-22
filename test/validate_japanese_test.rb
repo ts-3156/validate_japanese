@@ -7,60 +7,64 @@ class ValidateJapaneseTest < Minitest::Test
   end
 
   def test_japanese
-    User.send(:validates, :name, japanese: true)
+    setting(true)
     ok('ひらがなカタカナﾊﾝｶｸｶﾅ漢字012０１２ー－ｰ-')
     ng('alphabet')
   end
 
   def test_hiragana
-    User.send(:validates, :name, japanese: {hiragana: true})
+    setting(hiragana: true)
     ok('ひらがなー－')
     ng('カタカナ')
   end
 
   def test_katakana
-    User.send(:validates, :name, japanese: {katakana: true})
+    setting(katakana: true)
     ok('カタカナー－')
     ng('ひらがな')
   end
 
   def test_hankaku_kana
-    User.send(:validates, :name, japanese: {hankaku_kana: true})
+    setting(hankaku_kana: true)
     ok('ﾊﾝｶｸｶﾅｰ-')
     ng('カタカナ')
   end
 
   def test_kanji
-    User.send(:validates, :name, japanese: {kanji: true})
+    setting(kanji: true)
     ok('漢字々')
     ng('ひらがな')
   end
 
   def test_suji
-    User.send(:validates, :name, japanese: {suji: true})
+    setting(suji: true)
     ok('01234')
     ng('０１２３４')
   end
 
   def test_zenkaku_suji
-    User.send(:validates, :name, japanese: {zenkaku_suji: true})
+    setting(zenkaku_suji: true)
     ok('０１２３４')
     ng('01234')
   end
 
   def test_only
-    User.send(:validates, :name, japanese: {only: %i(hiragana katakana)})
+    setting(only: %i(hiragana katakana))
     ok('ひらがなとカタカナ')
     ng('ひらがなと漢字')
   end
 
   def test_concat
-    User.send(:validates, :name, japanese: {concat: '、。'})
+    setting(concat: '、。')
     ok('今日は、晴れです。')
     ng('今日は,晴れです.')
   end
 
   private
+
+  def setting(value)
+    User.send(:validates, :name, japanese: value)
+  end
 
   def ok(value)
     assert User.new(name: value).tap(&:valid?).errors[:name].empty?
