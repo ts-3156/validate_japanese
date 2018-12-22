@@ -12,10 +12,6 @@ rvm:
 env:
   global:
     - TRAVIS=true
-  matrix:
-    - DB=mysql
-    - DB=postgres
-    - DB=sqlite
 
 # We want to use `sudo: false` because the container infrastructure is supposed
 # to be faster, but Travis is having issues with containers lately ..
