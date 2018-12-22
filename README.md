@@ -13,43 +13,93 @@ Add this line to your application’s Gemfile:
 gem 'validate_japanese'
 ```
 
-Add a validation rule to your model.
+Add a validation rule to your model:
 
 ```ruby
-validates :name, japanese: true
+class User < ApplicationRecord
+  validates :name, japanese: true
+end
+```
+
+I18n error message:
+
+```ruby
+User.new(name: 'invalid name').tap(&:valid?)
+# => Name に使える文字はひらがなカタカナ半角カナ漢字数字全角数字です。
 ```
 
 ## Usage
 
 ```ruby
-class User < ApplicationRecord
-  # hiragana katakana hankaku_kana kanji suji zenkaku_suji "ー－" + "-"
-  validates :name, japanese: true
+# hiragana katakana hankaku_kana kanji suji zenkaku_suji "ー－" + "-"
+validates :name, japanese: true
 
-  # hiragana "ぁ-ん" + "ー－"
-  validates :name, japanese: {hiragana: true}
+user.errors.full_messages
+# => Name に使える文字はひらがなカタカナ半角カナ漢字数字全角数字です。
+```
 
-  # katakana "ァ-ン" + "ー－"
-  validates :name, japanese: {katakana: true}
+```ruby
+# hiragana "ぁ-ん" + "ー－"
+validates :name, japanese: {hiragana: true}
 
-  # hankaku_kana "ｧ-ﾝﾞﾟ" + "-"
-  validates :name, japanese: {hankaku_kana: true}
+user.errors.full_messages
+# => Name に使える文字はひらがなです。
+```
 
-  # kanji "一-龠々"
-  validates :name, japanese: {kanji: true}
+```ruby
+# katakana "ァ-ン" + "ー－"
+validates :name, japanese: {katakana: true}
 
-  # suji "0-9"
-  validates :name, japanese: {suji: true}
+user.errors.full_messages
+# => Name に使える文字はカタカナです。
+```
 
-  # zenkaku_suji "０-９"
-  validates :name, japanese: {zenkaku_suji: true}
+```ruby
+# hankaku_kana "ｧ-ﾝﾞﾟ" + "-"
+validates :name, japanese: {hankaku_kana: true}
 
-  # hiragana katakana "ぁ-ん" + "ァ-ン" + "ー－"
-  validates :name, japanese: {only: %i(hiragana katakana)}
+user.errors.full_messages
+# => Name に使える文字は半角カナです。
+```
 
-  # japanese "、。"
-  validates :name, japanese: {concat: '、。'}
-end
+```ruby
+# kanji "一-龠々"
+validates :name, japanese: {kanji: true}
+
+user.errors.full_messages
+# => Name に使える文字は漢字です。
+```
+
+```ruby
+# suji "0-9"
+validates :name, japanese: {suji: true}
+
+user.errors.full_messages
+# => Name に使える文字は数字です。
+```
+
+```ruby
+# zenkaku_suji "０-９"
+validates :name, japanese: {zenkaku_suji: true}
+
+user.errors.full_messages
+# => Name に使える文字は全角数字です。
+```
+
+```ruby
+# hiragana katakana "ぁ-ん" + "ァ-ン" + "ー－"
+validates :name, japanese: {only: %i(hiragana katakana)}
+
+user.errors.full_messages
+# => Name に使える文字はひらがなカタカナです。
+```
+
+```ruby
+# japanese "、。"
+validates :name, japanese: {concat: '、。'}
+
+user.errors.full_messages
+# => Name に使える文字はひらがなカタカナ半角カナ漢字数字全角数字、。です。
 ```
 
 ## Implementation

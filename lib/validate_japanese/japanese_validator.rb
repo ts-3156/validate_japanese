@@ -23,7 +23,7 @@ module ActiveModel
           if options[:message]
             record.errors.add(attribute, options[:message])
           else
-            record.errors.add(attribute, :invalid_japanese, kind: available_kind(keys))
+            record.errors.add(attribute, :invalid_japanese, kind: available_kind(keys, concat: options[:concat]))
           end
         end
       end
@@ -65,8 +65,10 @@ module ActiveModel
         self.class.const_get(name.upcase)
       end
 
-      def available_kind(keys, sep = '')
-        keys.reject {|k| %i(choonpu hankaku_choonpu).include?(k)}.map {|k| I18n.t("validate_japanese.#{k}")}.join(sep)
+      def available_kind(keys, concat: nil, sep: '')
+        kind = keys.reject {|k| %i(choonpu hankaku_choonpu).include?(k)}.map {|k| I18n.t("validate_japanese.#{k}")}.join(sep)
+        kind += concat if concat
+        kind
       end
     end
   end
