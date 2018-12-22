@@ -11,7 +11,7 @@ module ActiveModel
       HIRAGANA = "ぁ-ん"
       KATAKANA = "ァ-ン"
       HANKAKU_KANA = "ｧ-ﾝﾞﾟ"
-      KANJI = "一-龥"
+      KANJI = "一-龠々"
       SUJI = "0-9"
       ZENKAKU_SUJI = "０-９"
 
