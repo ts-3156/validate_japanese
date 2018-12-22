@@ -26,23 +26,29 @@ class User < ApplicationRecord
   # hiragana katakana hankaku_kana kanji suji zenkaku_suji choonpu
   validates :name, japanese: true
 
-  # only hiragana "ぁ-ん"
+  # hiragana "ぁ-ん" + "ー－"
   validates :name, japanese: {hiragana: true}
 
-  # only katakana "ァ-ン"
+  # katakana "ァ-ン" + "ー－"
   validates :name, japanese: {katakana: true}
 
-  # only hankaku_kana "ｧ-ﾝﾞﾟ"
+  # hankaku_kana "ｧ-ﾝﾞﾟ" + "-"
   validates :name, japanese: {hankaku_kana: true}
 
-  # only kanji "一-龠々"
+  # kanji "一-龠々"
   validates :name, japanese: {kanji: true}
 
-  # only suji "0-9"
+  # suji "0-9"
   validates :name, japanese: {suji: true}
 
-  # only zenkaku_suji "０-９"
+  # zenkaku_suji "０-９"
   validates :name, japanese: {zenkaku_suji: true}
+
+  # hiragana katakana "ぁ-ん" + "ァ-ン" + "ー－"
+  validates :name, japanese: {only: %i(hiragana katakana)}
+
+  # japanese + "、。"
+  validates :name, japanese: {concat: '、。'}
 end
 ```
 

@@ -8,31 +8,31 @@ class ValidateJapaneseTest < Minitest::Test
 
   def test_japanese
     User.send(:validates, :name, japanese: true)
-    ok('ひらがなカタカナﾊﾝｶｸｶﾅ漢字012０１２ー－')
+    ok('ひらがなカタカナﾊﾝｶｸｶﾅ漢字012０１２ー－ｰ-')
     ng('alphabet')
   end
 
   def test_hiragana
     User.send(:validates, :name, japanese: {hiragana: true})
-    ok('ひらがな')
+    ok('ひらがなー－')
     ng('カタカナ')
   end
 
   def test_katakana
     User.send(:validates, :name, japanese: {katakana: true})
-    ok('カタカナ')
+    ok('カタカナー－')
     ng('ひらがな')
   end
 
   def test_hankaku_kana
     User.send(:validates, :name, japanese: {hankaku_kana: true})
-    ok('ﾊﾝｶｸｶﾅ')
+    ok('ﾊﾝｶｸｶﾅｰ-')
     ng('カタカナ')
   end
 
   def test_kanji
     User.send(:validates, :name, japanese: {kanji: true})
-    ok('漢字')
+    ok('漢字々')
     ng('ひらがな')
   end
 
@@ -46,6 +46,18 @@ class ValidateJapaneseTest < Minitest::Test
     User.send(:validates, :name, japanese: {zenkaku_suji: true})
     ok('０１２３４')
     ng('01234')
+  end
+
+  def test_only
+    User.send(:validates, :name, japanese: {only: %i(hiragana katakana)})
+    ok('ひらがなとカタカナ')
+    ng('ひらがなと漢字')
+  end
+
+  def test_concat
+    User.send(:validates, :name, japanese: {concat: '、。'})
+    ok('今日は、晴れです。')
+    ng('今日は,晴れです.')
   end
 
   private

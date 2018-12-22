@@ -5,6 +5,7 @@ module ActiveModel
       SUFFIX = "\\z"
       KUHAKU = "\\s"
       CHOONPU = "ー－"
+      HANKAKU_CHOONPU = "\\-"
 
       ALPHABET = "a-zA-Z"
       ZENKAKU_ALPHABET = "ａ-ｚＡ-Ｚ"
@@ -24,8 +25,8 @@ module ActiveModel
       private
 
       def build_regexp(options)
-        options = options.except(:message)
-        japanese = %i(hiragana katakana hankaku_kana kanji suji zenkaku_suji choonpu)
+        options = options.except(:message, :choonpu, :hankaku_choonpu, :prefix, :suffix, :kuhaku)
+        japanese = %i(hiragana katakana hankaku_kana kanji suji zenkaku_suji choonpu hankaku_choonpu)
         keys = []
 
         if options.empty?
@@ -34,16 +35,32 @@ module ActiveModel
           keys.concat options[:only]
         elsif options.has_key?(:concat)
           keys.concat japanese
-          keys.concat options[:concat].map(&:to_sym).except(*japanese)
         else
           keys.concat options.select {|_, v| v}.keys
         end
 
-        Regexp.new("#{PREFIX}[#{keys.map(&method(:const)).join}]+#{SUFFIX}")
+        if (keys.include?(:hiragana) || keys.include?(:katakana)) && keys.exclude?(:choonpu)
+          keys << :choonpu
+        end
+        if keys.include?(:hankaku_kana) && keys.exclude?(:hankaku_choonpu)
+          keys << :hankaku_choonpu
+        end
+
+        base = keys.map(&method(:const)).join
+
+        if options.has_key?(:concat)
+          base += options[:concat].to_s
+        end
+
+        Regexp.new("#{PREFIX}[#{base}]+#{SUFFIX}")
       end
 
       def const(name)
         self.class.const_get(name.upcase)
+      end
+
+      def available_kind
+        # TODO
       end
     end
   end

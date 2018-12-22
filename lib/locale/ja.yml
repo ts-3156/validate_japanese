@@ -1,0 +1,13 @@
+en:
+  dic:
+    hiragana: ひらがな
+    katakana: カタカナ
+    hankaku_kana: 半角カナ
+    kanji: 漢字
+    suji: 数字
+    zenkaku_suji: 全角数字
+    alphabet: 英字
+    zenkaku_alphabet: 全角英字
+  errors:
+    messages:
+      invalid_japanese: に使える文字は%{kind}です。
