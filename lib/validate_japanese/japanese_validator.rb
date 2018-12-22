@@ -17,8 +17,14 @@ module ActiveModel
       ZENKAKU_SUJI = "０-９"
 
       def validate_each(record, attribute, value)
-        unless value.to_s.match? build_regexp(options)
-          record.errors.add(attribute, options[:message] || :invalid)
+        keys, regexp = build_regexp(options)
+
+        unless value.to_s.match? regexp
+          if options[:message]
+            record.errors.add(attribute, options[:message])
+          else
+            record.errors.add(attribute, :invalid_japanese, kind: available_kind(keys))
+          end
         end
       end
 
@@ -52,15 +58,15 @@ module ActiveModel
           base += options[:concat].to_s
         end
 
-        Regexp.new("#{PREFIX}[#{base}]+#{SUFFIX}")
+        [keys, Regexp.new("#{PREFIX}[#{base}]+#{SUFFIX}")]
       end
 
       def const(name)
         self.class.const_get(name.upcase)
       end
 
-      def available_kind
-        # TODO
+      def available_kind(keys, sep = '')
+        keys.reject {|k| %i(choonpu hankaku_choonpu).include?(k)}.map {|k| I18n.t("validate_japanese.#{k}")}.join(sep)
       end
     end
   end

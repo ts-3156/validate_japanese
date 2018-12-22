@@ -23,7 +23,7 @@ validates :name, japanese: true
 
 ```ruby
 class User < ApplicationRecord
-  # hiragana katakana hankaku_kana kanji suji zenkaku_suji choonpu
+  # hiragana katakana hankaku_kana kanji suji zenkaku_suji "ー－" + "-"
   validates :name, japanese: true
 
   # hiragana "ぁ-ん" + "ー－"
@@ -47,7 +47,7 @@ class User < ApplicationRecord
   # hiragana katakana "ぁ-ん" + "ァ-ン" + "ー－"
   validates :name, japanese: {only: %i(hiragana katakana)}
 
-  # japanese + "、。"
+  # japanese "、。"
   validates :name, japanese: {concat: '、。'}
 end
 ```
